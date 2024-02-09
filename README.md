@@ -1,7 +1,7 @@
 # protdcal_aac_features
 Quick little script to generate Protdcal and amino acid composition (AAC) features for an input file of peptides. 
 
-Friendly to those unfamiliar with python + command line!
+Friendly to those unfamiliar with python + command line.
 
 ## Requirements
 ### Python 3+
@@ -10,7 +10,7 @@ To check your python version in command line:
 ```
 python --version
 ```
-If you don't have python, [install it here](https://www.python.org/downloads/)!
+If you don't have python, [install it here](https://www.python.org/downloads/).
 ### pip
 You'll need pip to install the required python packages. Check if you have pip installed first in command line:
 ```
@@ -27,7 +27,7 @@ pip install pandas
 pip install numpy
 pip install propythia
 ```
-Once these are good to go, you can carry on with running the application!
+Once these are good to go, you can carry on with running the application.
 
 
 ## Basic Usage
@@ -37,7 +37,7 @@ Once in the generate_features folder within command line, use the following to r
 ```
 python generate_features.py -p "<column>" -i <input file> -o <output file>
 ```
-  **column** - the name of the column in your file that contains the peptide sequences (be sure to put it in quotes!)
+  **column** - the name of the column in your file that contains the peptide sequences (be sure to put it in quotes)
 
   **input file** - the location + name of the file containing your peptide sequences (acceptable file formats are .xlsx, .csv, and .tsv)
 

@@ -35,7 +35,7 @@ Download the **generate_features folder**.
 
 Once in the generate_features folder within command line, use the following to run:
 ```
-python generate_features.py -p "<column>" -i <input file> -o <output file>
+python generate_features.py -p "column" -i <input file> -o <output file>
 ```
   **column** - the name of the column in your file that contains the peptide sequences (be sure to put it in quotes)
 

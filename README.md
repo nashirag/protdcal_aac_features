@@ -39,6 +39,6 @@ python generate_features.py -p "<column>" -i <input file> -o <output file>
 ```
   **column** - the name of the column in your file that contains the peptide sequences (be sure to put it in quotes!)
 
-  **input file** - the location + name of the file containing your peptide sequences
+  **input file** - the location + name of the file containing your peptide sequences (acceptable file formats are .xlsx, .csv, and .tsv)
 
   **output file** - where you want to save the peptide sequences to (include a file name and file extension if desired, i.e. features.xlsx, features.csv, or features.tsv)

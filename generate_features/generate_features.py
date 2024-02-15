@@ -73,17 +73,41 @@ else:
     print("\nFile input in improper format. Please be sure file is a .xlsx, .tsv, or .csv and try again.")
     sys.exit()
 
-# Remove duplicates
-og_len = (len(user_feat))
-user_feat = user_feat.drop_duplicates(subset=str(seq_col)).reset_index(drop=True)
-feat_dup_len = og_len - (len(user_feat))
-print("\nChecked for duplicate peptide sequences. Dropped", feat_dup_len, "duplicates from original set of", og_len, "sequences.\n")
+try:
+    user_feat = user_feat.drop(columns=['Unnamed: 0'])
+except:
+    user_feat = user_feat
 
 # Define seq_col input by user as a variable, ensure it's in string format for use with dataframe
-site = str(seq_col)
+seq_col = str(seq_col)
+for c in user_feat.columns:
+    if seq_col in c:
+        site = c
+    else:
+        site = None
+if site == None:
+    print("Error with user input column name. Please double check name of peptide sequence column in sequences file and try again.")
+
+# Check for invalid information in sequences that we can't handle - remove + output as error file
+alphabet = "ARNDCQEGHILKMFPSTWYVX" # 20 essential amino acids + X
+invalid_input = user_feat[user_feat[site].str.strip(alphabet) != ""]
+user_feat = user_feat.drop(invalid_input.index).reset_index(drop=True)
+invalid_read_out_file = read_out+'invalid_sequences.csv'
+invalid_input.to_csv(invalid_read_out_file)
+print("\n WARNING! There were " + str(len(invalid_input)) + " sequences with invalid amino acids input (lower case, or characters that don't represent the 20 essential AAs). Reading out to " + invalid_read_out_file)
+print("\n Carrying on...\n\n")
 
 # Pull sequences and make X -> A for feature generation (A is least offensive AA)
-sequences = user_feat[site].str.replace('X', 'A')
+user_feat[site] = user_feat[site].str.replace('X', 'A')
+
+# Check for repeats - remove + output as repeat error file
+duplicates = user_feat[user_feat.duplicated(subset = site, keep="first")]
+user_feat = user_feat.drop(duplicates.index).reset_index(drop=True)
+duplicates.to_csv(read_out+'duplicated_sequences.csv')
+print("\n WARNING! There were " + str(len(duplicates)) + " duplicated sequences within the input. Keeping the first instance and deleting the others, reading out the deleted sequences to" + str(read_out+'duplicated_sequences.csv'))
+print("\n Carrying on...\n\n")
+
+sequences = user_feat[site]
 
 # NOW GET INTO FEATURE GENERATION!
 
@@ -125,6 +149,10 @@ final_feats = pd.merge(final_feats, aac, on=site)
 all_feats = pd.merge(final_feats, features, on=site)
 all_feats = all_feats.drop(columns='index')
 
+# Merge with initial input to keep indexes if there were any
+user_feat = user_feat.drop(columns=['Seqs_cleaned_for_X'])
+all_feats = pd.merge(user_feat, all_feats, on=site)
+
 print ("\nFeature Generation has finished! \nThe resulting dataset has", len(all_feats.columns), "features for", len(all_feats), "peptide sequences. \nNow saving to output location...")
 
 file_out = str(read_out)
@@ -143,5 +171,3 @@ else:
     all_feats.to_excel(file_out, index=False)
     
 print ("\nSaved file to", file_out)
-
-
